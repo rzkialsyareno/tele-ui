@@ -84,6 +84,34 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // API: List saved card files
+  if (req.method === "GET" && req.url === "/api/files") {
+    const files = fs.readdirSync(CARDS_DIR).filter((f) => f.endsWith(".js"));
+    const fileList = files.map((f) => ({
+      name: f,
+      size: fs.statSync(path.join(CARDS_DIR, f)).size,
+      url: "/api/files/" + f,
+    }));
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ files: fileList }, null, 2));
+    return;
+  }
+
+  // API: View a specific card file
+  if (req.method === "GET" && req.url.startsWith("/api/files/")) {
+    const fileName = req.url.replace("/api/files/", "");
+    const filePath = path.join(CARDS_DIR, fileName);
+    if (fs.existsSync(filePath) && fileName.endsWith(".js")) {
+      const code = fs.readFileSync(filePath, "utf8");
+      res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+      res.end(code);
+    } else {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "File not found" }));
+    }
+    return;
+  }
+
   // Static file serving
   let filePath = req.url === "/" ? "/index.html" : req.url;
   filePath = path.join(__dirname, filePath);
