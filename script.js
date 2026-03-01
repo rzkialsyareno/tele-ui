@@ -72,13 +72,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add new card button
   document.getElementById("add-card-btn").addEventListener("click", () => {
-    cardCounter++;
+    // Position relative to visible area (viewport), not the full 10000px workspace
+    const scrollContainer = workspace.parentElement;
+    const viewX =
+      scrollContainer.scrollLeft + scrollContainer.clientWidth / 2 - 190;
+    const viewY = scrollContainer.scrollTop + 40 + cardCounter * 50;
     createCardFromData({
-      name: "Message " + cardCounter,
-      x:
-        (workspace.getBoundingClientRect().width - 380) / 2 +
-        (cardCounter - 1) * 30,
-      y: 40 + (cardCounter - 1) * 50,
+      name: "Message " + (cardCounter + 1),
+      x: viewX,
+      y: viewY,
       elements: [],
     });
   });
