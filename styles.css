@@ -1,0 +1,554 @@
+:root {
+  --bg-main: #0e1621;
+  --bg-sidebar: #17212b;
+  --bg-canvas: #b5ceb4; /* telegram classic chat bg */
+  --text-main: #f5f5f5;
+  --text-muted: #7f91a4;
+  --primary: #5288c1;
+  --primary-hover: #4c7eb3;
+  --border-color: #242f3d;
+  --tele-bubble-bg: #ffffff;
+  --tele-text: #000000;
+  --tele-btn-bg: rgba(94, 153, 93, 0.7); /* Greenish Inline Button */
+  --tele-btn-text: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family:
+    "Roboto",
+    -apple-system,
+    sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 60px;
+  background-color: var(--bg-sidebar);
+  border-bottom: 1px solid var(--border-color);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  font-size: 18px;
+}
+.logo i {
+  color: #5288c1;
+  font-size: 24px;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Buttons */
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s;
+}
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+}
+
+/* Layout */
+.main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.sidebar {
+  width: 280px;
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-header {
+  padding: 20px 20px 5px;
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--text-muted);
+}
+.sidebar-desc {
+  padding: 0 20px 15px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.toolbox-section {
+  padding: 10px 20px;
+}
+
+/* Draggables */
+.draggable-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: grab;
+  margin-bottom: 10px;
+}
+.draggable-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+}
+.draggable-item i {
+  color: #5288c1;
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+}
+.item-text span {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+}
+.item-text small {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Canvas Area */
+.canvas-area {
+  flex: 1;
+  position: relative;
+  background-color: var(--bg-canvas);
+  overflow: auto;
+}
+.canvas-workspace {
+  width: 10000px;
+  height: 10000px;
+  position: relative;
+  cursor: grab;
+}
+.bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.2;
+  pointer-events: none;
+  background-image: url("https://www.transparenttextures.com/patterns/telegram.png"); /* Pattern substitute */
+}
+
+/* Telegram Card */
+.telegram-card {
+  width: 380px;
+  background-color: var(--tele-bubble-bg);
+  border-radius: 12px 12px 12px 4px; /* Classic Telegram bubble shape */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 5;
+  border: 2px solid transparent;
+  transition: 0.2s;
+}
+.telegram-card.drag-over {
+  border: 2px dashed #10b981;
+}
+.card-header {
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.bot-name {
+  color: #4388b9;
+  font-weight: bold;
+  font-size: 14px;
+}
+.bot-badge {
+  background: #e4eff9;
+  color: #4388b9;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 4px;
+  margin-left: 5px;
+  text-transform: uppercase;
+}
+
+.card-content-area {
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 5px;
+}
+.placeholder-msg {
+  text-align: center;
+  color: #9ca3af;
+  padding: 30px 20px;
+  font-size: 13px;
+  border: 1px dashed #e5e7eb;
+  margin: 15px;
+  border-radius: 8px;
+}
+
+/* Telegram Elements */
+.tg-element {
+  position: relative;
+  border: 1px solid transparent;
+}
+.tg-element:hover {
+  border: 1px dotted #cbd5e1;
+}
+.element-actions {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: none;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  padding: 2px;
+  z-index: 10;
+}
+.tg-element:hover .element-actions {
+  display: flex;
+}
+.element-actions button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+.element-actions button:hover {
+  color: #fb7185;
+}
+
+/* Photo Element */
+.tg-photo-placeholder {
+  width: 100%;
+  height: 160px;
+  background: #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  cursor: pointer;
+}
+.tg-photo {
+  width: 100%;
+  display: none;
+  cursor: pointer;
+  object-fit: cover;
+}
+
+/* Text Element */
+.tg-text {
+  padding: 10px 15px;
+  color: var(--tele-text);
+  font-size: 14px;
+  line-height: 1.4;
+  outline: none;
+}
+.tg-text code {
+  background: #f1f5f9;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  color: #a12027;
+  font-size: 13px;
+}
+.tg-text pre {
+  background: #f1f5f9;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: "Courier New", monospace;
+  color: #1e293b;
+  font-size: 13px;
+  margin: 6px 0;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+.tg-text blockquote {
+  border-left: 3px solid #5288c1;
+  padding: 2px 10px;
+  margin: 2px 0;
+  color: #475569;
+  background: #f8fafc;
+  border-radius: 0 6px 6px 0;
+  display: block;
+}
+.tg-text s {
+  text-decoration: line-through;
+}
+.tg-text:empty::before {
+  content: "Input text...";
+  color: #cbd5e1;
+}
+
+/* Toolbox Groups */
+.toolbox-group-label {
+  padding: 12px 15px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toolbox-group-label i {
+  font-size: 12px;
+  color: #5288c1;
+}
+.toolbox-sub-items {
+  display: flex;
+  gap: 6px;
+  padding: 4px 15px 10px;
+}
+.draggable-item.sub-item {
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 6px;
+  justify-content: center;
+  text-align: center;
+}
+.draggable-item.sub-item span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.sub-preview {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+}
+.sp-block {
+  width: 20px;
+  height: 12px;
+  background: rgba(94, 153, 93, 0.7);
+  border-radius: 3px;
+}
+.sp-block.full {
+  width: 60px;
+}
+.sp-block-reply {
+  width: 20px;
+  height: 12px;
+  background: #ffffff;
+  border-radius: 3px;
+  border: 1px solid #d1d5db;
+}
+.sp-block-reply.full {
+  width: 60px;
+}
+
+/* Floating Format Toolbar */
+.format-toolbar {
+  position: fixed;
+  display: none;
+  background: #1e293b;
+  border-radius: 8px;
+  padding: 4px;
+  gap: 2px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+  flex-direction: row;
+  border: 1px solid #334155;
+}
+.format-toolbar.visible {
+  display: flex;
+}
+.format-toolbar button {
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: 0.15s;
+}
+.format-toolbar button:hover {
+  background: #334155;
+  color: #38bdf8;
+}
+
+/* Inline Button Element */
+.tg-inline-keyboard {
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+.tg-btn-row {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.tg-inline-btn {
+  background-color: var(--tele-btn-bg);
+  color: var(--tele-btn-text);
+  border: none;
+  padding: 10px 5px;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  backdrop-filter: blur(5px);
+  box-sizing: border-box;
+}
+.tg-inline-btn[data-size="1"] {
+  flex: 0 0 100%;
+}
+.tg-inline-btn[data-size="2"] {
+  flex: 0 0 calc(50% - 2px);
+}
+.tg-inline-btn[data-size="4"] {
+  flex: 0 0 calc(25% - 3px);
+}
+.tg-inline-btn:hover {
+  background-color: rgba(94, 153, 93, 0.9);
+}
+
+/* Reply Keyboard Element */
+.tg-reply-keyboard {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #e8e8ed;
+  border-top: 1px solid #d1d5db;
+  border-radius: 0 0 12px 4px;
+}
+.tg-reply-row {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.tg-reply-btn {
+  background: #ffffff;
+  color: #1e1e1e;
+  border: none;
+  padding: 10px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  outline: none;
+  box-sizing: border-box;
+}
+.tg-reply-btn[data-size="1"] {
+  flex: 0 0 100%;
+}
+.tg-reply-btn[data-size="2"] {
+  flex: 0 0 calc(50% - 3px);
+}
+.tg-reply-btn[data-size="4"] {
+  flex: 0 0 calc(25% - 5px);
+}
+.tg-reply-btn:focus {
+  box-shadow: 0 0 0 2px #5288c1;
+}
+
+/* Card Wrapper & Meta */
+.card-wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  transition: box-shadow 0.15s;
+}
+.card-wrapper.dragging {
+  opacity: 0.75;
+  cursor: grabbing;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+.card-meta {
+  width: 380px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px 12px 0 0;
+  margin-bottom: -4px;
+  padding-bottom: 16px;
+  cursor: grab;
+}
+.card-title {
+  color: #a3a3a3;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: text;
+  outline: none;
+  text-transform: uppercase;
+}
+.card-title:focus {
+  color: #fff;
+}
+.card-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.delete-card-btn {
+  background: transparent;
+  border: none;
+  color: #fb7185;
+  cursor: pointer;
+  font-size: 14px;
+}
+.delete-card-btn:hover {
+  color: #e11d48;
+}
+.drag-handle {
+  cursor: grab;
+  color: #7f91a4;
+  padding: 4px;
+}
+.drag-handle:active {
+  cursor: grabbing;
+}
