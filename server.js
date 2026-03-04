@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const zlib = require("zlib");
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const CARDS_DIR = path.join(__dirname, "cards");
 
 // Ensure cards directory exists
